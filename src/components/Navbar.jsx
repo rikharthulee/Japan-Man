@@ -2,53 +2,107 @@
 import { useEffect, useState } from "react";
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  // Close on ESC
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
-    onScroll();
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    const onKey = (e) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  const links = [
+    { href: "#destinations", label: "Destinations" },
+    { href: "#inspiration", label: "Inspiration" },
+    { href: "#about", label: "About" },
+    { href: "#contact", label: "Contact" },
+  ];
+
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-50 transition ${
-        scrolled ? "bg-white/95 shadow-sm" : "bg-transparent"
-      }`}
-    >
+    <header className="bg-white/90 backdrop-blur-sm">
       <nav className="mx-auto max-w-6xl flex items-center justify-between px-4 py-4">
         <a href="/" className="font-semibold tracking-wide">
           JapanMan
         </a>
+
+        {/* Desktop menu */}
         <ul className="hidden md:flex gap-6">
-          <li>
-            <a className="hover:opacity-70" href="#destinations">
-              Destinations
-            </a>
-          </li>
-          <li>
-            <a className="hover:opacity-70" href="#inspiration">
-              Inspiration
-            </a>
-          </li>
-          <li>
-            <a className="hover:opacity-70" href="#about">
-              About
-            </a>
-          </li>
-          <li>
-            <a className="hover:opacity-70" href="#contact">
-              Contact
-            </a>
-          </li>
+          {links.map((l) => (
+            <li key={l.href}>
+              <a className="hover:opacity-70" href={l.href}>
+                {l.label}
+              </a>
+            </li>
+          ))}
         </ul>
-        <a
-          href="#plan"
-          className="rounded-full px-4 py-2 border hover:bg-black hover:text-white transition"
-        >
-          Plan a Trip
-        </a>
+
+        <div className="flex items-center gap-3">
+          <a
+            href="#plan"
+            className="hidden md:inline-block rounded-full px-4 py-2 border hover:bg-black hover:text-white transition"
+          >
+            Plan a Trip
+          </a>
+
+          {/* Burger (mobile only) */}
+          <button
+            className="md:hidden inline-flex items-center justify-center rounded-md p-2 ring-1 ring-black/10"
+            aria-label="Open menu"
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+          >
+            {/* Icon swaps between burger and close */}
+            <svg
+              className={`h-5 w-5 transition ${open ? "hidden" : "block"}`}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M3 6h18M3 12h18M3 18h18" />
+            </svg>
+            <svg
+              className={`h-5 w-5 transition ${open ? "block" : "hidden"}`}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M6 6l12 12M18 6l-12 12" />
+            </svg>
+          </button>
+        </div>
       </nav>
+
+      {/* Mobile dropdown panel */}
+      <div
+        className={`md:hidden overflow-hidden transition-[max-height,opacity] duration-300 ${
+          open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="px-4 pb-4">
+          <ul className="flex flex-col gap-3">
+            {links.map((l) => (
+              <li key={l.href}>
+                <a
+                  className="block rounded-lg px-3 py-2 hover:bg-black/5"
+                  href={l.href}
+                  onClick={() => setOpen(false)}
+                >
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <a
+            href="#plan"
+            className="mt-3 inline-block w-full rounded-full px-4 py-2 border text-center hover:bg-black hover:text-white transition"
+            onClick={() => setOpen(false)}
+          >
+            Plan a Trip
+          </a>
+        </div>
+      </div>
     </header>
   );
 }

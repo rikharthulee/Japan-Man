@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Travel Co.",
-  description: "Tailor-made journeys",
+  title: "JapanMan",
+  description: "Tailor-made Japan travel experiences",
 };
 
 export default function RootLayout({ children }) {
