@@ -12,13 +12,16 @@ export default function Footer() {
           <div className="font-medium">Destinations</div>
           <ul className="mt-3 space-y-2 text-sm text-neutral-700">
             <li>
-              <a href="#">Asia</a>
+              <a href="#">Tokyo</a>
             </li>
             <li>
-              <a href="#">Europe</a>
+              <a href="#">Kyoto</a>
             </li>
             <li>
-              <a href="#">Africa</a>
+              <a href="#">Hokkaido</a>
+            </li>
+            <li>
+              <a href="#">Hiroshima</a>
             </li>
           </ul>
         </div>
@@ -38,7 +41,7 @@ export default function Footer() {
         </div>
         <div>
           <div className="font-medium">Get in touch</div>
-          <p className="mt-3 text-sm text-neutral-700">hello@example.com</p>
+          <p className="mt-3 text-sm text-neutral-700">hello@japanman.co.uk</p>
         </div>
       </div>
       <div className="mx-auto max-w-6xl px-4 mt-8 text-xs text-neutral-500">

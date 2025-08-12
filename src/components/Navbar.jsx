@@ -20,9 +20,14 @@ export default function Navbar() {
 
   return (
     <header className="bg-white/90 backdrop-blur-sm">
-      <nav className="mx-auto max-w-6xl flex items-center justify-between px-4 py-4">
-        <a href="/" className="font-semibold tracking-wide">
-          JapanMan
+      <nav className="mx-auto max-w-6xl flex items-center justify-between px-4 py-2">
+        {/* Logo */}
+        <a href="/" className="flex items-center">
+          <img
+            src="/logo.png"
+            alt="JapanMan Logo"
+            className="h-[32px] w-auto" // controlled logo height
+          />
         </a>
 
         {/* Desktop menu */}
