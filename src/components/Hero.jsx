@@ -1,34 +1,70 @@
 export default function Hero() {
   return (
-    <section className="relative h-[80vh] min-h-[520px]">
-      <img
-        src="https://plus.unsplash.com/premium_photo-1661964177687-57387c2cbd14?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        alt=""
-        className="absolute inset-0 h-full w-full object-cover"
-      />
-      <div className="absolute inset-0 bg-black/35" />
-      <div className="relative z-10 mx-auto max-w-4xl px-4 h-full flex flex-col items-start justify-center">
-        <h1 className="text-white text-4xl md:text-6xl font-medium leading-tight">
-          Tailor‑made journeys, crafted by experts
-        </h1>
-        <p className="mt-4 text-white/90 max-w-2xl">
-          Bespoke itineraries to the world’s most extraordinary places.
-        </p>
-        <div className="mt-8 flex gap-3">
+    <>
+      {/* HERO */}
+      <section className="relative h-[65vh] min-h-[420px]">
+        <img
+          src="https://plus.unsplash.com/premium_photo-1661964177687-57387c2cbd14?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.1.0"
+          alt="Japan landscape"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+
+        {/* Stronger gradient scrim for readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/70 to-black/90" />
+
+        <div className="relative z-10 mx-auto max-w-4xl px-4 h-full flex flex-col items-center justify-center text-center">
+          <h1 className="text-white drop-shadow-lg text-4xl md:text-6xl font-semibold leading-tight">
+            Tailor-made journeys, crafted by experts
+          </h1>
+          <p className="mt-4 text-white/90 drop-shadow text-lg max-w-2xl font-medium">
+            Bespoke itineraries to Japan's most extraordinary places.
+          </p>
+          <div className="mt-8 flex gap-3 flex-wrap justify-center">
+            <a
+              href="#destinations"
+              className="rounded-full bg-white text-black px-5 py-3 font-medium"
+            >
+              Explore Destinations
+            </a>
+            <a
+              href="#plan"
+              className="rounded-full border border-white/80 text-white px-5 py-3 font-medium"
+            >
+              Plan with an Expert
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* PITCH SECTION BELOW HERO */}
+      <section className="bg-white py-12 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <p className="text-lg leading-relaxed text-gray-800">
+            With fifteen years designing Japan holidays for some of the UK’s
+            leading travel agencies — and three years living in Japan — our
+            expert, David, is the person to speak to about making your trip
+            truly special.
+          </p>
+          <p className="mt-4 text-lg leading-relaxed text-gray-800">
+            We offer a <strong>40-minute, no-obligation consultation</strong>,
+            then a flat fee of <strong>£125</strong> for unlimited support until
+            your journey’s end. Because we’re based in South-East Asia, we can
+            provide <strong>real-time, on-the-ground assistance</strong> while
+            you travel.
+          </p>
+          <p className="mt-4 text-lg leading-relaxed text-gray-800">
+            What you choose to book is entirely up to you — but with us as your
+            trusted advisor, you’re bound to enjoy a richer, more cost-effective
+            Japan experience.
+          </p>
           <a
-            href="#destinations"
-            className="rounded-full bg-white text-black px-5 py-3"
+            href="#contact"
+            className="inline-block mt-8 rounded-full bg-black text-white px-6 py-3 hover:bg-gray-800 transition"
           >
-            Explore Destinations
-          </a>
-          <a
-            href="#plan"
-            className="rounded-full border border-white/70 text-white px-5 py-3"
-          >
-            Plan with an Expert
+            Contact Us
           </a>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
