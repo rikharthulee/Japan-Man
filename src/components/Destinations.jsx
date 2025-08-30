@@ -2,6 +2,11 @@ import Link from "next/link";
 import destinations from "@/data/destinations";
 
 export default function Destinations() {
+  // Sort destinations alphabetically by title
+  const sortedDestinations = [...destinations].sort((a, b) =>
+    a.title.localeCompare(b.title)
+  );
+
   return (
     <section id="destinations" className="mx-auto max-w-6xl px-4 py-16">
       <div className="flex items-end justify-between">
@@ -11,7 +16,7 @@ export default function Destinations() {
         </Link>
       </div>
       <div className="mt-8 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-        {destinations.map((d) => (
+        {sortedDestinations.map((d) => (
           <Link
             key={d.slug}
             href={`/destinations/${d.slug}`}
