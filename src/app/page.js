@@ -11,7 +11,6 @@ export default function Page() {
     <>
       <main>
         <Hero />
-        <Destinations />
         <Editorial />
         <QuoteBand />
         <CTA />
