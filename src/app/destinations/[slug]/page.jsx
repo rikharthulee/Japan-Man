@@ -20,9 +20,19 @@ export default function DestinationPage({ params }) {
         alt=""
         className="mt-6 w-full rounded-xl object-cover"
       />
-      {destination.details && (
-        <p className="mt-4 text-lg leading-relaxed">{destination.details}</p>
-      )}
+      {destination.details &&
+        (Array.isArray(destination.details) ? (
+          destination.details.map((para, i) => (
+            <p
+              key={i}
+              className={`text-lg leading-relaxed ${i === 0 ? "mt-4" : "mt-2"}`}
+            >
+              {para}
+            </p>
+          ))
+        ) : (
+          <p className="mt-4 text-lg leading-relaxed">{destination.details}</p>
+        ))}
     </main>
   );
 }

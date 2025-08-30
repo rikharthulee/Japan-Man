@@ -2,10 +2,12 @@ const destinations = [
   {
     title: "Tokyo",
     slug: "tokyo",
-    image: "https://picsum.photos/seed/tokyo/1200/800",
+    image: "/images/destinations/tokyo.jpg",
     summary: "Japan's bustling capital city",
-    details:
-      "Tokyo blends cutting-edge modernity with traditional temples and tranquil gardens.",
+    details: [
+      "Leaving London for Tokyo for two years in my twenties is unlike any other urban experience I’ve had. Superimpose this 40-million strong metropolis on the UK and it would reach from London to Bristol, Brighton to Birmingham! I’ve been back a dozen times since then and there’s always more to explore. There are various viewing platforms and sky bars around the city where you can take it all in by day or Bladerunner night. At JapanMan, we’ve got the city’s sights mapped out to ensure that you don’t end up spending excessive time traipsing about on trains and subways.",
+      "That said, the Tokyo transport system works like a dream and as long as you avoid it at rush hour it’s an integral part of the Japan experience. JapanMan offers both pre-trip and on-the-ground support (via Whatsapp) to ensure you don’t get lost in the labyrinthine depths of the bigger stations like Shinjuku with its 200+ exits. Maximise your time and fun in arguably the greatest urban playground in the world with our custom guides to each of Tokyo’s major environs. I’ve been drinking & dining everywhere from tiny 12-seater izakayas to luxury hotels and can build recommendations into a comprehensive fully tailored itinerary for you.",
+    ],
   },
   {
     title: "Kyoto",
@@ -42,6 +44,15 @@ const destinations = [
   {
     title: "Kanazawa",
     slug: "kanazawa",
+    image: "https://picsum.photos/seed/kanazawa/1200/800",
+    summary: "Preserved samurai and geisha districts",
+    details:
+      "Kanazawa boasts well-preserved Edo-era neighborhoods and the famed Kenrokuen Garden.",
+  },
+
+  {
+    title: "Osaka",
+    slug: "osaka",
     image: "https://picsum.photos/seed/kanazawa/1200/800",
     summary: "Preserved samurai and geisha districts",
     details:

@@ -1,6 +1,4 @@
-import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import Destinations from "@/components/Destinations";
 import Editorial from "@/components/Editorial";
 import QuoteBand from "@/components/QuoteBand";
 import CTA from "@/components/CTA";

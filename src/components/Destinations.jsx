@@ -22,7 +22,7 @@ export default function Destinations() {
               alt=""
               className="h-64 w-full object-cover transition duration-300 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/0" />
+            <div className="absolute inset-0 " />
             <div className="absolute bottom-3 left-3 text-white text-lg font-medium">
               {d.title}
             </div>
