@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -12,44 +13,48 @@ export default function Navbar() {
   }, []);
 
   const links = [
-    { href: "#destinations", label: "Destinations" },
-    { href: "#inspiration", label: "Inspiration" },
+    { href: "/destinations", label: "Destinations" },
+    { href: "#Accomodation", label: "Accomodation" },
+    { href: "#examples", label: "Examples" },
+    { href: "#blog", label: "Blog" },
     { href: "#about", label: "About" },
-    { href: "#contact", label: "Contact" },
+    { href: "#faq", label: "FAQ" },
+    { href: "#toolkit", label: "Toolkit" },
   ];
 
   return (
     <header className="bg-white/90 backdrop-blur-sm">
       <nav className="mx-auto max-w-6xl flex items-center justify-between px-4 py-2">
         {/* Logo */}
-        <a href="/" className="flex items-center">
+        <Link href="/" className="flex items-center">
           <img
             src="/logo.png"
             alt="JapanMan Logo"
             className="h-[32px] w-auto" // controlled logo height
           />
-        </a>
+        </Link>
 
         {/* Desktop menu */}
         <ul className="hidden md:flex gap-6">
           {links.map((l) => (
             <li key={l.href}>
-              <a className="hover:opacity-70" href={l.href}>
+              <Link className="hover:opacity-70" href={l.href}>
                 {l.label}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
 
         <div className="flex items-center gap-3">
-          <a
+          {/* <a
             href="#plan"
             className="hidden md:inline-block rounded-full px-4 py-2 border hover:bg-black hover:text-white transition"
           >
-            Plan a Trip
-          </a>
+            +44 7786 992190
+          </a> */}
 
           {/* Burger (mobile only) */}
+
           <button
             className="md:hidden inline-flex items-center justify-center rounded-md p-2 ring-1 ring-black/10"
             aria-label="Open menu"
@@ -89,23 +94,23 @@ export default function Navbar() {
           <ul className="flex flex-col gap-3">
             {links.map((l) => (
               <li key={l.href}>
-                <a
+                <Link
                   className="block rounded-lg px-3 py-2 hover:bg-black/5"
                   href={l.href}
                   onClick={() => setOpen(false)}
                 >
                   {l.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
-          <a
+          <Link
             href="#plan"
             className="mt-3 inline-block w-full rounded-full px-4 py-2 border text-center hover:bg-black hover:text-white transition"
             onClick={() => setOpen(false)}
           >
             Plan a Trip
-          </a>
+          </Link>
         </div>
       </div>
     </header>

@@ -47,10 +47,12 @@ export default function Hero() {
           </p>
           <p className="mt-4 text-lg leading-relaxed text-gray-800">
             We offer a <strong>40-minute, no-obligation consultation</strong>,
-            then a flat fee of <strong>£125</strong> for unlimited support until
-            your journey’s end. Because we’re based in South-East Asia, we can
-            provide <strong>real-time, on-the-ground assistance</strong> while
-            you travel.
+            then a flat fee of <strong>£125</strong> for a comprehensive
+            tailored itinerary and <strong>unlimited email support</strong> on
+            the build-up to your holiday. Because we’re based in South-East
+            Asia, we can provide{" "}
+            <strong>real-time, on-the-ground assistance</strong> while you
+            travel.
           </p>
           <p className="mt-4 text-lg leading-relaxed text-gray-800">
             What you choose to book is entirely up to you — but with us as your

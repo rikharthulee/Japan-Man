@@ -1,4 +1,5 @@
 import "./globals.css";
+import Navbar from "../components/Navbar";
 
 export const metadata = {
   title: "JapanMan",
@@ -8,7 +9,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="antialiased bg-white text-neutral-900">{children}</body>
+      <body>
+        <Navbar />
+        <div className="antialiased bg-white text-neutral-900">{children}</div>
+      </body>
     </html>
   );
 }
