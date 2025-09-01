@@ -19,20 +19,6 @@ export default function Hero() {
           <p className="mt-4 text-white/90 drop-shadow text-lg max-w-2xl font-medium">
             Bespoke itineraries to Japan's most extraordinary places.
           </p>
-          <div className="mt-8 flex gap-3 flex-wrap justify-center">
-            <a
-              href="#destinations"
-              className="rounded-full bg-white text-black px-5 py-3 font-medium"
-            >
-              Explore Destinations
-            </a>
-            <a
-              href="#plan"
-              className="rounded-full border border-white/80 text-white px-5 py-3 font-medium"
-            >
-              Plan with an Expert
-            </a>
-          </div>
         </div>
       </section>
 

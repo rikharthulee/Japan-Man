@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   // Keep banner height consistent between image size and padding space
-  const bannerH = 80; // px
+  const bannerH = 120; // px
 
   // Close on ESC
   useEffect(() => {
@@ -26,14 +26,14 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-sm shadow-sm">
       <nav className="mx-auto max-w-6xl px-4 py-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             {/* Burger (mobile only) */}
 
             <button
-              className="md:hidden inline-flex items-center justify-center rounded-md p-2 ring-1 ring-black/10"
+              className="lg:hidden inline-flex items-center justify-center rounded-md p-2 ring-1 ring-black/10"
               aria-label="Open menu"
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
@@ -59,12 +59,34 @@ export default function Navbar() {
               </svg>
             </button>
           </div>
+          {/* WhatsApp on mobile bar (right side) */}
+          <a
+            href="https://wa.me/447786992190"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="lg:hidden inline-flex items-center gap-2 bg-green-500 text-white rounded-full px-3 py-2 text-sm shadow hover:bg-green-600 transition"
+            aria-label="Chat on WhatsApp"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="h-4 w-4"
+              aria-hidden="true"
+            >
+              <path d="M20.52 3.48A11.94 11.94 0 0 0 12.06 0C5.46.03.15 5.34.18 11.94c.01 2.11.56 4.14 1.56 5.95L0 24l6.29-1.69a11.83 11.83 0 0 0 5.77 1.49h.05c6.6-.03 11.91-5.34 11.94-11.94a11.9 11.9 0 0 0-3.53-8.38ZM12.1 21.3h-.05a9.75 9.75 0 0 1-4.98-1.37l-.36-.21-3.73.99 1-3.64-.23-.38A9.73 9.73 0 0 1 2.03 12C2 6.5 6.5 2 12.05 2c2.61 0 5.06 1.02 6.9 2.86A9.73 9.73 0 0 1 22.1 12c-.03 5.5-4.53 9.3-10 9.3Zm5.01-6.98c-.27-.14-1.58-.78-1.82-.86-.24-.09-.42-.14-.6.13-.18.27-.69.86-.83 1.04-.15.18-.31.2-.58.07-.27-.14-1.12-.41-2.14-1.31-.79-.7-1.33-1.56-1.49-1.82-.15-.27-.02-.42.11-.55.12-.12.27-.31.4-.47.13-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.6-1.43-.82-1.96-.22-.53-.44-.46-.6-.46-.16 0-.34-.02-.52-.02s-.48.07-.73.34c-.25.27-.96.94-.96 2.29 0 1.35.99 2.66 1.13 2.84.14.18 1.96 2.98 4.75 4.17.66.29 1.18.47 1.58.6.66.21 1.27.18 1.75.11.53-.08 1.58-.65 1.8-1.28.22-.63.22-1.17.15-1.28-.07-.11-.25-.18-.52-.32Z" />
+            </svg>
+            <span className="whitespace-nowrap">WhatsApp</span>
+          </a>
         </div>
       </nav>
 
       {/* Desktop banner perched on black link bar */}
       {/* Wrapper reserves space above the bar so the banner isn't clipped */}
-      <div className="hidden md:block relative" style={{ paddingTop: `${bannerH}px` }}>
+      <div
+        className="hidden lg:block relative"
+        style={{ paddingTop: `${bannerH}px` }}
+      >
         {/* Skyline glued to top of the bar */}
         <img
           src="/banner.svg"
@@ -91,7 +113,7 @@ export default function Navbar() {
                   href="https://wa.me/447786992190"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hidden md:inline-flex items-center gap-2 bg-green-500 text-white rounded-full px-4 py-2 shadow hover:bg-green-600 transition"
+                  className="hidden lg:inline-flex items-center gap-2 bg-green-500 text-white rounded-full px-4 py-2 shadow hover:bg-green-600 transition"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -112,8 +134,10 @@ export default function Navbar() {
 
       {/* Mobile dropdown panel */}
       <div
-        className={`md:hidden overflow-hidden transition-[max-height,opacity] duration-300 ${
-          open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        className={`lg:hidden transition-[max-height,opacity] duration-300 ${
+          open
+            ? "max-h-screen opacity-100 overflow-y-auto"
+            : "max-h-0 opacity-0 overflow-hidden"
         }`}
       >
         <div className="px-4 pb-4">
@@ -130,13 +154,6 @@ export default function Navbar() {
               </li>
             ))}
           </ul>
-          <Link
-            href="#plan"
-            className="mt-3 inline-block w-full rounded-full px-4 py-2 border text-center hover:bg-black hover:text-white transition"
-            onClick={() => setOpen(false)}
-          >
-            Plan a Trip
-          </Link>
         </div>
       </div>
     </header>
