@@ -2,8 +2,3 @@
 :root {
   --radius: 16px;
 }
-
-/* Keep layout width stable when scrollbar appears */
-html {
-  scrollbar-gutter: stable both-edges;
-}
