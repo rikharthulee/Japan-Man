@@ -1,5 +1,6 @@
 import destinations from "@/data/destinations";
 import { notFound } from "next/navigation";
+import EmblaCarousel from "@/components/EmblaCarousel";
 
 export function generateStaticParams() {
   return destinations.map((d) => ({ slug: d.slug }));
@@ -26,11 +27,20 @@ export default function DestinationPage({ params }) {
       <section className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-start">
         {/* Image: order first on mobile, second on desktop (so it sits on the right on larger screens) */}
         <div className="order-1 md:order-2">
-          <img
-            src={destination.image}
-            alt=""
-            className="w-full rounded-xl object-cover"
-          />
+          {Array.isArray(destination.images) && destination.images.length > 0 ? (
+            <EmblaCarousel
+              images={destination.images}
+              options={{ loop: true, align: "start" }}
+              className="rounded-xl overflow-hidden"
+              slideClass="h-[48vh] min-h-[320px]"
+            />
+          ) : (
+            <img
+              src={destination.image}
+              alt={destination.title}
+              className="w-full rounded-xl object-cover"
+            />
+          )}
         </div>
 
         {/* Text: order second on mobile (under image), first on desktop (left of image) */}

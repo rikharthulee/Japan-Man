@@ -17,12 +17,11 @@ export default function Navbar() {
   const links = [
     { href: "/", label: "Home" },
     { href: "/destinations", label: "Destinations" },
-    { href: "#accommodation", label: "Accommodation" },
-    { href: "#examples", label: "Examples" },
-    { href: "#blog", label: "Blog" },
-    { href: "#about", label: "About" },
-    { href: "#faq", label: "FAQ" },
-    { href: "#toolkit", label: "Toolkit" },
+    { href: "/accommodation", label: "Accommodation" },
+    { href: "/examples", label: "Examples" },
+    { href: "/blog", label: "Blog" },
+    { href: "/about", label: "About" },
+    { href: "/faq", label: "FAQ" },
   ];
 
   return (
