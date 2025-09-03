@@ -14,7 +14,7 @@ export default function DestinationPage({ params }) {
   }
 
   return (
-    <main className="mx-auto max-w-8xl px-4 py-10">
+    <main className="mx-auto max-w-6xl px-4 py-10">
       {/* Title with black lines above and below */}
       <div className="border-t-2 border-black pt-4">
         <h1 className="text-3xl md:text-4xl font-medium text-center md:text-left">
@@ -27,7 +27,8 @@ export default function DestinationPage({ params }) {
       <section className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-start">
         {/* Image: order first on mobile, second on desktop (so it sits on the right on larger screens) */}
         <div className="order-1 md:order-2">
-          {Array.isArray(destination.images) && destination.images.length > 0 ? (
+          {Array.isArray(destination.images) &&
+          destination.images.length > 0 ? (
             <EmblaCarousel
               images={destination.images}
               options={{ loop: true, align: "start" }}

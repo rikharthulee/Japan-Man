@@ -2,11 +2,20 @@ import "./globals.css";
 import Navbar from "../components/Navbar";
 import { Playfair_Display } from "next/font/google";
 
-const playfair = Playfair_Display({ subsets: ["latin"], weight: ["400", "500", "600", "700"], display: "swap" });
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />;
 
 export const metadata = {
   title: "JapanMan",
   description: "Tailor-made Japan travel experiences",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({ children }) {

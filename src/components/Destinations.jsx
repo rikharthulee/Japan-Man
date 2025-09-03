@@ -23,8 +23,11 @@ export default function Destinations() {
             className="group relative overflow-hidden rounded-xl"
           >
             <img
-              src={(Array.isArray(d.images) && d.images.length > 0 ? d.images[0] : d.image) || 
-                "/images/destinations/tokyo/tokyo1.jpg"}
+              src={
+                (Array.isArray(d.images) && d.images.length > 0
+                  ? d.images[0]
+                  : d.image) || "/images/destinations/tokyo/tokyo1.jpg"
+              }
               alt={`${d.title}`}
               className="h-64 w-full object-cover transition duration-300 group-hover:scale-105"
             />

@@ -32,7 +32,7 @@ export default function Hero() {
             truly special.
           </p>
           <p className="mt-4 text-lg leading-relaxed text-gray-800">
-            We offer a <strong>40-minute, no-obligation consultation</strong>,
+            We offer a <strong>30-minute, no-obligation consultation</strong>,
             then a flat fee of <strong>£125</strong> for a comprehensive
             tailored itinerary and <strong>unlimited email support</strong> on
             the build-up to your holiday. Because we’re based in South-East
