@@ -1,7 +1,9 @@
 import destinations from "@/data/destinations";
 import { notFound } from "next/navigation";
 import EmblaCarousel from "@/components/EmblaCarousel";
+import Image from "next/image";
 import { fetchDestinations, fetchDestinationBySlug } from "@/lib/supabaseRest";
+import { resolveImageUrl } from "@/lib/imageUrl";
 
 export async function generateStaticParams() {
   try {
@@ -13,19 +15,20 @@ export async function generateStaticParams() {
 }
 
 export default async function DestinationPage({ params }) {
+  const { slug } = await params;
   let destination = null;
   try {
-    const row = await fetchDestinationBySlug(params.slug);
+    const row = await fetchDestinationBySlug(slug);
     if (row) {
       destination = {
         title: row.name,
-        image: row.hero_image || row.thumbnail_image,
+        image: resolveImageUrl(row.hero_image || row.thumbnail_image),
         details: row.body_richtext || row.summary,
       };
     }
   } catch {}
   if (!destination) {
-    destination = destinations.find((d) => d.slug === params.slug);
+    destination = destinations.find((d) => d.slug === slug);
   }
 
   if (!destination) {
@@ -55,10 +58,13 @@ export default async function DestinationPage({ params }) {
               slideClass="h-[48vh] min-h-[320px]"
             />
           ) : (
-            <img
+            <Image
               src={destination.image}
               alt={destination.title}
-              className="w-full rounded-xl object-cover"
+              width={1200}
+              height={800}
+              className="w-full h-auto rounded-xl object-cover"
+              priority={false}
             />
           )}
         </div>

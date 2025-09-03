@@ -1,7 +1,9 @@
 import accommodation from "@/data/accommodation";
 import { notFound } from "next/navigation";
 import EmblaCarousel from "@/components/EmblaCarousel";
+import Image from "next/image";
 import { fetchAccommodations, fetchAccommodationBySlug } from "@/lib/supabaseRest";
+import { resolveImageUrl } from "@/lib/imageUrl";
 
 export async function generateStaticParams() {
   try {
@@ -13,19 +15,20 @@ export async function generateStaticParams() {
 }
 
 export default async function AccommodationDetailPage({ params }) {
+  const { slug } = await params;
   let item = null;
   try {
-    const row = await fetchAccommodationBySlug(params.slug);
+    const row = await fetchAccommodationBySlug(slug);
     if (row) {
       item = {
         title: row.name,
-        image: row.hero_image,
+        image: resolveImageUrl(row.hero_image),
         details: row.description || row.summary,
       };
     }
   } catch {}
   if (!item) {
-    item = accommodation.find((a) => a.slug === params.slug);
+    item = accommodation.find((a) => a.slug === slug);
   }
 
   if (!item) {
@@ -51,10 +54,12 @@ export default async function AccommodationDetailPage({ params }) {
               slideClass="h-[48vh] min-h-[320px]"
             />
           ) : (
-            <img
+            <Image
               src={item.image}
               alt={item.title}
-              className="w-full rounded-xl object-cover"
+              width={1200}
+              height={800}
+              className="w-full h-auto rounded-xl object-cover"
             />
           )}
         </div>

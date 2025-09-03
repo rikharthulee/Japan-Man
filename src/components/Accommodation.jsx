@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import accommodationData from "@/data/accommodation";
 
 export default function Accommodation({ items }) {
@@ -20,15 +21,19 @@ export default function Accommodation({ items }) {
             href={`/accommodation/${item.slug}`}
             className="group relative overflow-hidden rounded-xl"
           >
-            <img
-              src={
-                (Array.isArray(item.images) && item.images.length > 0
-                  ? item.images[0]
-                  : item.image || item.hero_image) || "/images/destinations/tokyo/tokyo1.jpg"
-              }
-              alt={`${item.title || item.name}`}
-              className="h-64 w-full object-cover transition duration-300 group-hover:scale-105"
-            />
+            <div className="relative h-64 w-full">
+              <Image
+                src={
+                  (Array.isArray(item.images) && item.images.length > 0
+                    ? item.images[0]
+                    : item.image || item.hero_image) || "/images/destinations/tokyo/tokyo1.jpg"
+                }
+                alt={`${item.title || item.name}`}
+                fill
+                sizes="(min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
+                className="object-cover transition duration-300 group-hover:scale-105"
+              />
+            </div>
             <div className="absolute inset-0 " />
             <div className="absolute bottom-3 left-3 text-white text-lg font-medium">
               {item.title || item.name}

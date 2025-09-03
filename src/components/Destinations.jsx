@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import destinationsData from "@/data/destinations";
 
 export default function Destinations({ items }) {
@@ -23,16 +24,21 @@ export default function Destinations({ items }) {
             href={`/destinations/${d.slug}`}
             className="group relative overflow-hidden rounded-xl"
           >
-            <img
-              src={
-                (Array.isArray(d.images) && d.images.length > 0
-                  ? d.images[0]
-                  : d.image || d.thumbnail_image || d.hero_image) ||
-                "/images/destinations/tokyo/tokyo1.jpg"
-              }
-              alt={`${d.title || d.name}`}
-              className="h-64 w-full object-cover transition duration-300 group-hover:scale-105"
-            />
+            <div className="relative h-64 w-full">
+              <Image
+                src={
+                  (Array.isArray(d.images) && d.images.length > 0
+                    ? d.images[0]
+                    : d.image || d.thumbnail_image || d.hero_image) ||
+                  "/images/destinations/tokyo/tokyo1.jpg"
+                }
+                alt={`${d.title || d.name}`}
+                fill
+                sizes="(min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
+                className="object-cover transition duration-300 group-hover:scale-105"
+                priority={false}
+              />
+            </div>
             <div className="absolute inset-0 " />
             <div className="absolute bottom-3 left-3 text-white text-lg font-medium">
               {d.title || d.name}
