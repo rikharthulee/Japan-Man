@@ -1,10 +1,11 @@
 import Link from "next/link";
-import destinations from "@/data/destinations";
+import destinationsData from "@/data/destinations";
 
-export default function Destinations() {
-  // Sort destinations alphabetically by title
-  const sortedDestinations = [...destinations].sort((a, b) =>
-    a.title.localeCompare(b.title)
+export default function Destinations({ items }) {
+  const source = Array.isArray(items) && items.length > 0 ? items : destinationsData;
+  // Sort alphabetically
+  const sortedDestinations = [...source].sort((a, b) =>
+    (a.title || a.name).localeCompare(b.title || b.name)
   );
 
   return (
@@ -26,14 +27,15 @@ export default function Destinations() {
               src={
                 (Array.isArray(d.images) && d.images.length > 0
                   ? d.images[0]
-                  : d.image) || "/images/destinations/tokyo/tokyo1.jpg"
+                  : d.image || d.thumbnail_image || d.hero_image) ||
+                "/images/destinations/tokyo/tokyo1.jpg"
               }
-              alt={`${d.title}`}
+              alt={`${d.title || d.name}`}
               className="h-64 w-full object-cover transition duration-300 group-hover:scale-105"
             />
             <div className="absolute inset-0 " />
             <div className="absolute bottom-3 left-3 text-white text-lg font-medium">
-              {d.title}
+              {d.title || d.name}
             </div>
           </Link>
         ))}

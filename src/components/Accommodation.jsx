@@ -1,8 +1,9 @@
 import Link from "next/link";
-import accommodation from "@/data/accommodation";
+import accommodationData from "@/data/accommodation";
 
-export default function Accommodation() {
-  const sorted = [...accommodation].sort((a, b) => a.title.localeCompare(b.title));
+export default function Accommodation({ items }) {
+  const source = Array.isArray(items) && items.length > 0 ? items : accommodationData;
+  const sorted = [...source].sort((a, b) => (a.title || a.name).localeCompare(b.title || b.name));
 
   return (
     <section id="accommodation" className="mx-auto max-w-6xl px-4 py-16">
@@ -23,14 +24,14 @@ export default function Accommodation() {
               src={
                 (Array.isArray(item.images) && item.images.length > 0
                   ? item.images[0]
-                  : item.image) || "/images/destinations/tokyo/tokyo1.jpg"
+                  : item.image || item.hero_image) || "/images/destinations/tokyo/tokyo1.jpg"
               }
-              alt={`${item.title}`}
+              alt={`${item.title || item.name}`}
               className="h-64 w-full object-cover transition duration-300 group-hover:scale-105"
             />
             <div className="absolute inset-0 " />
             <div className="absolute bottom-3 left-3 text-white text-lg font-medium">
-              {item.title}
+              {item.title || item.name}
             </div>
           </Link>
         ))}

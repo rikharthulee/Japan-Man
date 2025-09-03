@@ -1,9 +1,19 @@
 import Destinations from "@/components/Destinations";
+import { fetchDestinations } from "@/lib/supabaseRest";
 
-export default function DestinationsPage() {
+export default async function DestinationsPage() {
+  let items = [];
+  try {
+    const rows = await fetchDestinations();
+    items = rows.map((r) => ({ slug: r.slug, title: r.name, image: r.thumbnail_image || r.hero_image }));
+  } catch (e) {
+    // ignore; fallback to local data inside component
+  }
+
   return (
     <main className="mx-auto max-w-4xl px-4 py-10">
-      <Destinations />
+      <Destinations items={items} />
     </main>
   );
 }
+export const revalidate = 300;

@@ -44,13 +44,13 @@ CREATE TABLE public.destinations (
   summary text,
   body_richtext jsonb,
   hero_image text,
-  country text,
   region text,
   lat numeric,
   lng numeric,
   status text DEFAULT 'draft'::text CHECK (status = ANY (ARRAY['draft'::text, 'published'::text])),
   published_at timestamp with time zone,
   created_at timestamp with time zone DEFAULT now(),
+  thumbnail_image text,
   CONSTRAINT destinations_pkey PRIMARY KEY (id)
 );
 CREATE TABLE public.itineraries (
@@ -65,8 +65,8 @@ CREATE TABLE public.itineraries (
   notes jsonb,
   created_at timestamp with time zone DEFAULT now(),
   CONSTRAINT itineraries_pkey PRIMARY KEY (id),
-  CONSTRAINT itineraries_destination_id_fkey FOREIGN KEY (destination_id) REFERENCES public.destinations(id),
-  CONSTRAINT itineraries_owner_id_fkey FOREIGN KEY (owner_id) REFERENCES public.profiles(id)
+  CONSTRAINT itineraries_owner_id_fkey FOREIGN KEY (owner_id) REFERENCES public.profiles(id),
+  CONSTRAINT itineraries_destination_id_fkey FOREIGN KEY (destination_id) REFERENCES public.destinations(id)
 );
 CREATE TABLE public.itinerary_days (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -114,4 +114,21 @@ CREATE TABLE public.profiles (
   created_at timestamp with time zone DEFAULT now(),
   CONSTRAINT profiles_pkey PRIMARY KEY (id),
   CONSTRAINT profiles_id_fkey FOREIGN KEY (id) REFERENCES auth.users(id)
+);
+CREATE TABLE public.sub_destinations (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  destination_id uuid,
+  slug text NOT NULL UNIQUE,
+  name text NOT NULL,
+  summary text,
+  body_richtext jsonb,
+  thumbnail_image text,
+  images jsonb,
+  lat numeric,
+  lng numeric,
+  status text DEFAULT 'draft'::text CHECK (status = ANY (ARRAY['draft'::text, 'published'::text])),
+  position integer,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT sub_destinations_pkey PRIMARY KEY (id),
+  CONSTRAINT sub_destinations_destination_id_fkey FOREIGN KEY (destination_id) REFERENCES public.destinations(id)
 );

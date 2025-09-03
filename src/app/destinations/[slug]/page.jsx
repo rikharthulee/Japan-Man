@@ -1,13 +1,32 @@
 import destinations from "@/data/destinations";
 import { notFound } from "next/navigation";
 import EmblaCarousel from "@/components/EmblaCarousel";
+import { fetchDestinations, fetchDestinationBySlug } from "@/lib/supabaseRest";
 
-export function generateStaticParams() {
-  return destinations.map((d) => ({ slug: d.slug }));
+export async function generateStaticParams() {
+  try {
+    const rows = await fetchDestinations();
+    return rows.map((d) => ({ slug: d.slug }));
+  } catch {
+    return destinations.map((d) => ({ slug: d.slug }));
+  }
 }
 
-export default function DestinationPage({ params }) {
-  const destination = destinations.find((d) => d.slug === params.slug);
+export default async function DestinationPage({ params }) {
+  let destination = null;
+  try {
+    const row = await fetchDestinationBySlug(params.slug);
+    if (row) {
+      destination = {
+        title: row.name,
+        image: row.hero_image || row.thumbnail_image,
+        details: row.body_richtext || row.summary,
+      };
+    }
+  } catch {}
+  if (!destination) {
+    destination = destinations.find((d) => d.slug === params.slug);
+  }
 
   if (!destination) {
     notFound();
@@ -66,3 +85,4 @@ export default function DestinationPage({ params }) {
     </main>
   );
 }
+export const revalidate = 300;

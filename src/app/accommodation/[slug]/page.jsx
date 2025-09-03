@@ -1,13 +1,32 @@
 import accommodation from "@/data/accommodation";
 import { notFound } from "next/navigation";
 import EmblaCarousel from "@/components/EmblaCarousel";
+import { fetchAccommodations, fetchAccommodationBySlug } from "@/lib/supabaseRest";
 
-export function generateStaticParams() {
-  return accommodation.map((a) => ({ slug: a.slug }));
+export async function generateStaticParams() {
+  try {
+    const rows = await fetchAccommodations();
+    return rows.map((a) => ({ slug: a.slug }));
+  } catch {
+    return accommodation.map((a) => ({ slug: a.slug }));
+  }
 }
 
-export default function AccommodationDetailPage({ params }) {
-  const item = accommodation.find((a) => a.slug === params.slug);
+export default async function AccommodationDetailPage({ params }) {
+  let item = null;
+  try {
+    const row = await fetchAccommodationBySlug(params.slug);
+    if (row) {
+      item = {
+        title: row.name,
+        image: row.hero_image,
+        details: row.description || row.summary,
+      };
+    }
+  } catch {}
+  if (!item) {
+    item = accommodation.find((a) => a.slug === params.slug);
+  }
 
   if (!item) {
     notFound();
@@ -59,4 +78,4 @@ export default function AccommodationDetailPage({ params }) {
     </main>
   );
 }
-
+export const revalidate = 900;
