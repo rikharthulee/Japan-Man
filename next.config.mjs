@@ -14,7 +14,13 @@ try {
 
 const nextConfig = {
   images: {
-    remotePatterns,
+    remotePatterns: [
+      ...remotePatterns,
+      // Allow placeholder images used in seed data
+      { protocol: 'https', hostname: 'picsum.photos' },
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: 'plus.unsplash.com' },
+    ],
   },
 };
 
