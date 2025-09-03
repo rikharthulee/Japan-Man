@@ -13,9 +13,6 @@ export default function Destinations({ items }) {
     <section id="destinations" className="mx-auto max-w-6xl px-4 py-16">
       <div className="flex items-end justify-between">
         <h2 className="text-3xl md:text-4xl font-medium">Destinations</h2>
-        <Link href="/destinations" className="underline">
-          View all
-        </Link>
       </div>
       <div className="mt-8 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
         {sortedDestinations.map((d) => (

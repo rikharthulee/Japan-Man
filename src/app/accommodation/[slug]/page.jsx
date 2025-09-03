@@ -4,6 +4,7 @@ import EmblaCarousel from "@/components/EmblaCarousel";
 import Image from "next/image";
 import { fetchAccommodations, fetchAccommodationBySlug } from "@/lib/supabaseRest";
 import { resolveImageUrl } from "@/lib/imageUrl";
+import Link from "next/link";
 
 export async function generateStaticParams() {
   try {
@@ -38,9 +39,12 @@ export default async function AccommodationDetailPage({ params }) {
   return (
     <main className="mx-auto max-w-8xl px-4 py-10">
       <div className="border-t-2 border-black pt-4">
-        <h1 className="text-3xl md:text-4xl font-medium text-center md:text-left">
-          {item.title}
-        </h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl md:text-4xl font-medium text-center md:text-left flex-1">
+            {item.title}
+          </h1>
+          <Link href="/accommodation" className="underline ml-4">Back</Link>
+        </div>
         <div className="border-b-2 border-black mt-3" />
       </div>
 

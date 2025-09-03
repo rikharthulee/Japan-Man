@@ -10,9 +10,6 @@ export default function Accommodation({ items }) {
     <section id="accommodation" className="mx-auto max-w-6xl px-4 py-16">
       <div className="flex items-end justify-between">
         <h2 className="text-3xl md:text-4xl font-medium">Accommodation</h2>
-        <Link href="/accommodation" className="underline">
-          View all
-        </Link>
       </div>
       <div className="mt-8 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
         {sorted.map((item) => (
