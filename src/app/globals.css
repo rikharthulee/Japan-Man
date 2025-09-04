@@ -2,3 +2,9 @@
 :root {
   --radius: 16px;
 }
+
+/* Prevent layout shift when some pages have a scrollbar and others don't */
+/* Reserve vertical scrollbar space on all pages to prevent horizontal shift */
+html { overflow-y: scroll; }
+/* For modern browsers that support gutter reservation, this helps too */
+html { scrollbar-gutter: stable; }

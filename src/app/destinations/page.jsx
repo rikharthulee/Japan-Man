@@ -10,6 +10,7 @@ export default async function DestinationsPage() {
       slug: r.slug,
       title: r.name,
       image: resolveImageUrl(r.thumbnail_image || r.hero_image),
+      credit: r.credit || null,
     }));
   } catch (e) {
     // ignore; fallback to local data inside component

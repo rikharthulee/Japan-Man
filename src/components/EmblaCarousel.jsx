@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
+import Image from "next/image";
 
 export default function EmblaCarousel({
   images = [],
@@ -47,12 +48,17 @@ export default function EmblaCarousel({
         <div className="flex">
           {images.map((src, i) => (
             <div key={i} className={`flex-[0_0_100%] relative ${slideClass}`}>
-              <img
-                src={src}
-                alt={`Slide ${i + 1}`}
-                className="absolute inset-0 w-full h-full object-cover"
-                draggable="false"
-              />
+              <div className="absolute inset-0">
+                <Image
+                  src={src}
+                  alt={`Slide ${i + 1}`}
+                  fill
+                  sizes="100vw"
+                  className="object-cover"
+                  draggable={false}
+                  priority={i === 0}
+                />
+              </div>
               {/* optional dark overlay for hero text readability */}
               {/* <div className='absolute inset-0 bg-black/20' /> */}
             </div>

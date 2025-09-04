@@ -2,9 +2,13 @@ import accommodation from "@/data/accommodation";
 import { notFound } from "next/navigation";
 import EmblaCarousel from "@/components/EmblaCarousel";
 import Image from "next/image";
-import { fetchAccommodations, fetchAccommodationBySlug } from "@/lib/supabaseRest";
+import {
+  fetchAccommodations,
+  fetchAccommodationBySlug,
+} from "@/lib/supabaseRest";
 import { resolveImageUrl } from "@/lib/imageUrl";
 import Link from "next/link";
+import RichText from "@/components/RichText";
 
 export async function generateStaticParams() {
   try {
@@ -25,6 +29,7 @@ export default async function AccommodationDetailPage({ params }) {
         title: row.name,
         image: resolveImageUrl(row.hero_image),
         details: row.description || row.summary,
+        credit: row.credit || null,
       };
     }
   } catch {}
@@ -37,15 +42,17 @@ export default async function AccommodationDetailPage({ params }) {
   }
 
   return (
-    <main className="mx-auto max-w-8xl px-4 py-10">
-      <div className="border-t-2 border-black pt-4">
+    <main className="mx-auto max-w-4xl px-4 py-10">
+      <div className="border-t-2 border-black/10 pt-4">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl md:text-4xl font-medium text-center md:text-left flex-1">
             {item.title}
           </h1>
-          <Link href="/accommodation" className="underline ml-4">Back</Link>
+          <Link href="/accommodation" className="underline ml-4">
+            Back
+          </Link>
         </div>
-        <div className="border-b-2 border-black mt-3" />
+        <div className="border-b-2 border-black/10 mt-3" />
       </div>
 
       <section className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-start">
@@ -68,20 +75,15 @@ export default async function AccommodationDetailPage({ params }) {
           )}
         </div>
 
+        {/* Caption under image */}
+        {item.credit ? (
+          <p className="mt-2 text-xs text-gray-500 text-right order-3 md:order-3">
+            {item.credit}
+          </p>
+        ) : null}
+
         <div className="order-2 md:order-1">
-          {item.details &&
-            (Array.isArray(item.details) ? (
-              item.details.map((para, i) => (
-                <p
-                  key={i}
-                  className={`text-lg leading-relaxed ${i === 0 ? "mt-0" : "mt-3"}`}
-                >
-                  {para}
-                </p>
-              ))
-            ) : (
-              <p className="text-lg leading-relaxed">{item.details}</p>
-            ))}
+          <RichText value={item.details} />
         </div>
       </section>
     </main>

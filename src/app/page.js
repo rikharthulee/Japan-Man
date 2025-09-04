@@ -9,8 +9,6 @@ export default function Page() {
     <>
       <main>
         <Hero />
-        <Editorial />
-        <QuoteBand />
         <CTA />
       </main>
       <Footer />
