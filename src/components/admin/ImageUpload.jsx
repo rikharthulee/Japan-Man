@@ -23,31 +23,21 @@ export default function ImageUpload({
     }
     setUploading(true);
     try {
-      const ext = file.name.split(".").pop();
-      const base = file.name.replace(/\.[^.]+$/, "");
-      const safeBase = base.toLowerCase().replace(/[^a-z0-9-_]+/g, "-").slice(0, 48);
-      const key = `${prefix}/${Date.now()}-${safeBase}.${ext}`;
-      const { error } = await supabase.storage.from(bucket).upload(key, file, {
-        cacheControl: "3600",
-        upsert: false,
+      // Always use the server upload route for reliability (bypasses Storage RLS)
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("prefix", prefix);
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: fd,
+        credentials: "same-origin",
       });
-      if (error) throw error;
-      onChange?.(key);
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json?.error || `Upload failed (${res.status})`);
+      if (json?.key) onChange?.(json.key);
     } catch (err) {
-      console.error("Client upload failed", err);
-      // Fallback to server route using service role (if configured)
-      try {
-        const fd = new FormData();
-        fd.append("file", e.target.files?.[0]);
-        fd.append("prefix", prefix);
-        const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
-        const json = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(json?.error || `Server upload failed (${res.status})`);
-        if (json?.key) onChange?.(json.key);
-      } catch (err2) {
-        console.error("Server upload failed", err2);
-        alert(err2.message || "Upload failed");
-      }
+      console.error("Upload failed", err);
+      alert(err.message || "Upload failed");
     } finally {
       setUploading(false);
       e.target.value = "";
