@@ -2,9 +2,18 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import CallNowButton from "./CallNowButton";
+import { useRouter } from "next/navigation";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [isAuthed, setIsAuthed] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState("");
+  const [user, setUser] = useState(null);
+  const router = useRouter();
+  const supabase = createClientComponentClient();
   // Keep banner height consistent between image size and padding space
   const bannerH = 120; // px
 
@@ -14,6 +23,75 @@ export default function Navbar() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+
+  // Track auth state and show Sign out when logged in
+  useEffect(() => {
+    let mounted = true;
+    async function prime() {
+      const { data } = await supabase.auth.getSession();
+      if (!mounted) return;
+      const session = data.session;
+      setIsAuthed(!!session);
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        const { data: prof } = await supabase
+          .from("profiles")
+          .select("display_name, avatar_url")
+          .eq("id", session.user.id)
+          .single();
+        setUserName(
+          prof?.display_name || session.user.user_metadata?.name || ""
+        );
+        setAvatarUrl(prof?.avatar_url || "");
+      } else {
+        setUserName("");
+        setAvatarUrl("");
+      }
+    }
+    prime();
+
+    const { data: sub } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      setIsAuthed(!!session);
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        const { data: prof } = await supabase
+          .from("profiles")
+          .select("display_name, avatar_url")
+          .eq("id", session.user.id)
+          .single();
+        setUserName(
+          prof?.display_name || session.user.user_metadata?.name || ""
+        );
+        setAvatarUrl(prof?.avatar_url || "");
+      } else {
+        setUserName("");
+        setAvatarUrl("");
+      }
+    });
+    return () => {
+      mounted = false;
+      sub.subscription?.unsubscribe();
+    };
+  }, [supabase]);
+
+  async function handleSignOut() {
+    setSigningOut(true);
+    try {
+      // Hit server route to clear auth cookies for SSR/middleware
+      await fetch("/auth/signout", { method: "POST" });
+    } catch (_) {
+      // fall back to client sign out
+      try { await supabase.auth.signOut(); } catch (_) {}
+    }
+    // Hard redirect to ensure a clean state everywhere
+    if (typeof window !== "undefined") {
+      window.location.assign("/");
+    } else {
+      router.replace("/");
+      router.refresh();
+    }
+    setSigningOut(false);
+  }
 
   const links = [
     { href: "/", label: "Home" },
@@ -67,6 +145,43 @@ export default function Navbar() {
         </div>
       </nav>
 
+      {/* Top-right user area (always visible when authed) */}
+      {isAuthed ? (
+        <div className="absolute right-3 top-2 z-20 flex items-center gap-2 pl-2 pr-2">
+          {(() => {
+            const displayName = userName || user?.email || "";
+            const initial = (displayName || "").trim().slice(0, 1).toUpperCase();
+            return (
+              <>
+                {avatarUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={avatarUrl}
+                    alt="Avatar"
+                    className="h-7 w-7 rounded-full object-cover border border-black/10"
+                  />
+                ) : (
+                  <div className="h-7 w-7 rounded-full bg-black/10 grid place-items-center text-xs text-black">
+                    {initial}
+                  </div>
+                )}
+                <span className="hidden sm:inline text-sm text-black/80 max-w-[12rem] truncate">
+                  {displayName}
+                </span>
+              </>
+            );
+          })()}
+          <button
+            onClick={handleSignOut}
+            disabled={signingOut}
+            className="rounded bg-black text-white px-3 py-1 text-sm hover:opacity-80 disabled:opacity-60 whitespace-nowrap"
+            title="Sign out"
+          >
+            {signingOut ? "Signing out…" : "Sign out"}
+          </button>
+        </div>
+      ) : null}
+
       {/* Desktop banner perched on black link bar */}
       {/* Wrapper reserves space above the bar so the banner isn't clipped */}
       <div
@@ -83,7 +198,7 @@ export default function Navbar() {
         {/* Black link bar (normal height) */}
         <div className="bg-black">
           <div className="mx-auto max-w-6xl py-2">
-            <div className="grid grid-cols-[1fr_auto_1fr] items-center">
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-6">
               <div />
               <ul className="flex justify-center items-center gap-6 text-white">
                 {links.map((l) => (
@@ -93,13 +208,15 @@ export default function Navbar() {
                     </Link>
                   </li>
                 ))}
+                {!isAuthed ? (
+                  <li>
+                    <Link className="hover:opacity-80" href="/login">
+                      Login
+                    </Link>
+                  </li>
+                ) : null}
               </ul>
-              <div className="flex justify-end pr-4">
-                {/* <CallNowButton
-                  variant="dark"
-                  className="hidden lg:inline-flex"
-                /> */}
-              </div>
+              <div className="flex justify-end items-center gap-3 pr-4 pl-4 flex-nowrap min-w-0" />
             </div>
           </div>
         </div>
@@ -126,7 +243,47 @@ export default function Navbar() {
                 </Link>
               </li>
             ))}
+            {!isAuthed ? (
+              <li>
+                <Link
+                  className="block rounded-lg px-3 py-2 hover:bg-black/5"
+                  href="/login"
+                  onClick={() => setOpen(false)}
+                >
+                  Login
+                </Link>
+              </li>
+            ) : null}
           </ul>
+          {isAuthed ? (
+            <div className="mt-3">
+              <div className="mb-2 flex items-center gap-2">
+                {avatarUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={avatarUrl}
+                    alt="Avatar"
+                    className="h-8 w-8 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="h-8 w-8 rounded-full bg-black/10 grid place-items-center text-xs">
+                    {(userName || "").slice(0, 1).toUpperCase()}
+                  </div>
+                )}
+                <span className="text-sm">{userName}</span>
+              </div>
+              <button
+                onClick={() => {
+                  setOpen(false);
+                  handleSignOut();
+                }}
+                disabled={signingOut}
+                className="w-full rounded bg-black text-white px-3 py-2 text-sm disabled:opacity-60"
+              >
+                {signingOut ? "Signing out…" : "Sign out"}
+              </button>
+            </div>
+          ) : null}
         </div>
       </div>
     </header>

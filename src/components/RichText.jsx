@@ -7,7 +7,11 @@ export default function RichText({ value }) {
   return (
     <>
       {paras.map((p, i) => (
-        <p key={i} className={`text-lg leading-relaxed ${i === 0 ? "mt-0" : "mt-3"}`}>
+        <p
+          key={i}
+          style={{ textIndent: "1.5em" }}
+          className={`text-lg leading-relaxed ${i === 0 ? "mt-0" : "mt-3"}`}
+        >
           {p}
         </p>
       ))}
@@ -60,4 +64,3 @@ function flattenNode(node) {
   walk(node);
   return parts.join("").trim();
 }
-

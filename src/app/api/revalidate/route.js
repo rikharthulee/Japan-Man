@@ -1,12 +1,36 @@
 import { NextResponse } from "next/server";
 import { revalidateTag } from "next/cache";
+import { cookies } from "next/headers";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 
 export async function POST(req) {
   const secret = process.env.REVALIDATE_SECRET;
   const url = new URL(req.url);
   const qpSecret = url.searchParams.get("secret");
 
-  if (secret && qpSecret !== secret) {
+  let allowed = false;
+  // Allow if secret matches
+  if (secret && qpSecret === secret) allowed = true;
+  // Or allow if an authenticated admin/editor calls it
+  if (!allowed) {
+    try {
+      const cookieStore = await cookies();
+      const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        const { data: prof } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .maybeSingle();
+        if (prof && ["admin", "editor"].includes(prof.role)) allowed = true;
+      }
+    } catch {}
+  }
+
+  if (!allowed && secret) {
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 

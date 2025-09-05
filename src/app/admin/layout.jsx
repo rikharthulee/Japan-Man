@@ -19,7 +19,7 @@ export default async function AdminLayout({ children }) {
     .single();
 
   if (!profile || !["admin", "editor"].includes(profile.role)) {
-    return redirect("/");
+    return redirect("/login?unauthorized=1");
   }
 
   return (

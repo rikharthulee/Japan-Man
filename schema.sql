@@ -18,8 +18,11 @@ CREATE TABLE public.accommodations (
   affiliate_url text,
   status text DEFAULT 'draft'::text CHECK (status = ANY (ARRAY['draft'::text, 'published'::text])),
   created_at timestamp with time zone DEFAULT now(),
+  credit text,
+  sub_destination_id uuid,
   CONSTRAINT accommodations_pkey PRIMARY KEY (id),
-  CONSTRAINT accommodations_destination_id_fkey FOREIGN KEY (destination_id) REFERENCES public.destinations(id)
+  CONSTRAINT accommodations_sub_destination_id_fkey FOREIGN KEY (sub_destination_id) REFERENCES public.sub_destinations(id),
+  CONSTRAINT accommodations_destination_id_fkey FOREIGN KEY (destination_id) REFERENCES public.locations(id)
 );
 CREATE TABLE public.articles (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -34,24 +37,8 @@ CREATE TABLE public.articles (
   published_at timestamp with time zone,
   created_at timestamp with time zone DEFAULT now(),
   CONSTRAINT articles_pkey PRIMARY KEY (id),
-  CONSTRAINT articles_author_id_fkey FOREIGN KEY (author_id) REFERENCES public.profiles(id),
-  CONSTRAINT articles_destination_id_fkey FOREIGN KEY (destination_id) REFERENCES public.destinations(id)
-);
-CREATE TABLE public.destinations (
-  id uuid NOT NULL DEFAULT gen_random_uuid(),
-  slug text NOT NULL UNIQUE,
-  name text NOT NULL,
-  summary text,
-  body_richtext jsonb,
-  hero_image text,
-  region text,
-  lat numeric,
-  lng numeric,
-  status text DEFAULT 'draft'::text CHECK (status = ANY (ARRAY['draft'::text, 'published'::text])),
-  published_at timestamp with time zone,
-  created_at timestamp with time zone DEFAULT now(),
-  thumbnail_image text,
-  CONSTRAINT destinations_pkey PRIMARY KEY (id)
+  CONSTRAINT articles_destination_id_fkey FOREIGN KEY (destination_id) REFERENCES public.locations(id),
+  CONSTRAINT articles_author_id_fkey FOREIGN KEY (author_id) REFERENCES public.profiles(id)
 );
 CREATE TABLE public.itineraries (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -65,16 +52,23 @@ CREATE TABLE public.itineraries (
   notes jsonb,
   created_at timestamp with time zone DEFAULT now(),
   CONSTRAINT itineraries_pkey PRIMARY KEY (id),
-  CONSTRAINT itineraries_owner_id_fkey FOREIGN KEY (owner_id) REFERENCES public.profiles(id),
-  CONSTRAINT itineraries_destination_id_fkey FOREIGN KEY (destination_id) REFERENCES public.destinations(id)
+  CONSTRAINT itineraries_destination_id_fkey FOREIGN KEY (destination_id) REFERENCES public.locations(id),
+  CONSTRAINT itineraries_owner_id_fkey FOREIGN KEY (owner_id) REFERENCES public.profiles(id)
 );
 CREATE TABLE public.itinerary_days (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   itinerary_id uuid,
   day_index integer NOT NULL,
   title text,
+  destination_id uuid,
+  sub_destination_id uuid,
+  accommodation_id uuid,
+  date date,
   CONSTRAINT itinerary_days_pkey PRIMARY KEY (id),
-  CONSTRAINT itinerary_days_itinerary_id_fkey FOREIGN KEY (itinerary_id) REFERENCES public.itineraries(id)
+  CONSTRAINT itinerary_days_sub_destination_id_fkey FOREIGN KEY (sub_destination_id) REFERENCES public.sub_destinations(id),
+  CONSTRAINT itinerary_days_itinerary_id_fkey FOREIGN KEY (itinerary_id) REFERENCES public.itineraries(id),
+  CONSTRAINT itinerary_days_accommodation_id_fkey FOREIGN KEY (accommodation_id) REFERENCES public.accommodations(id),
+  CONSTRAINT itinerary_days_destination_id_fkey FOREIGN KEY (destination_id) REFERENCES public.locations(id)
 );
 CREATE TABLE public.itinerary_items (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -86,8 +80,30 @@ CREATE TABLE public.itinerary_items (
   end_time time without time zone,
   meta jsonb,
   created_at timestamp with time zone DEFAULT now(),
+  poi_id uuid,
+  accommodation_item_id uuid,
+  title_override text,
   CONSTRAINT itinerary_items_pkey PRIMARY KEY (id),
-  CONSTRAINT itinerary_items_itinerary_day_id_fkey FOREIGN KEY (itinerary_day_id) REFERENCES public.itinerary_days(id)
+  CONSTRAINT itinerary_items_itinerary_day_id_fkey FOREIGN KEY (itinerary_day_id) REFERENCES public.itinerary_days(id),
+  CONSTRAINT itinerary_items_poi_id_fkey FOREIGN KEY (poi_id) REFERENCES public.poi(id),
+  CONSTRAINT itinerary_items_accommodation_item_id_fkey FOREIGN KEY (accommodation_item_id) REFERENCES public.accommodations(id)
+);
+CREATE TABLE public.locations (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  slug text NOT NULL UNIQUE,
+  name text NOT NULL,
+  summary text,
+  body_richtext jsonb,
+  hero_image text,
+  region text,
+  lat numeric,
+  lng numeric,
+  status text DEFAULT 'draft'::text CHECK (status = ANY (ARRAY['draft'::text, 'published'::text])),
+  published_at timestamp with time zone,
+  created_at timestamp with time zone DEFAULT now(),
+  thumbnail_image text,
+  credit text,
+  CONSTRAINT locations_pkey PRIMARY KEY (id)
 );
 CREATE TABLE public.poi (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -103,8 +119,10 @@ CREATE TABLE public.poi (
   deeplink text,
   status text DEFAULT 'draft'::text CHECK (status = ANY (ARRAY['draft'::text, 'published'::text])),
   created_at timestamp with time zone DEFAULT now(),
+  sub_destination_id uuid,
   CONSTRAINT poi_pkey PRIMARY KEY (id),
-  CONSTRAINT poi_destination_id_fkey FOREIGN KEY (destination_id) REFERENCES public.destinations(id)
+  CONSTRAINT poi_sub_destination_id_fkey FOREIGN KEY (sub_destination_id) REFERENCES public.sub_destinations(id),
+  CONSTRAINT poi_destination_id_fkey FOREIGN KEY (destination_id) REFERENCES public.locations(id)
 );
 CREATE TABLE public.profiles (
   id uuid NOT NULL,
@@ -130,5 +148,5 @@ CREATE TABLE public.sub_destinations (
   position integer,
   created_at timestamp with time zone DEFAULT now(),
   CONSTRAINT sub_destinations_pkey PRIMARY KEY (id),
-  CONSTRAINT sub_destinations_destination_id_fkey FOREIGN KEY (destination_id) REFERENCES public.destinations(id)
+  CONSTRAINT sub_destinations_destination_id_fkey FOREIGN KEY (destination_id) REFERENCES public.locations(id)
 );

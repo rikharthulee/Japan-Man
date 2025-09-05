@@ -1,0 +1,93 @@
+"use client";
+import { useMemo, useState } from "react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { resolveImageUrl } from "@/lib/imageUrl";
+
+export default function ImageUpload({
+  label,
+  value,
+  onChange,
+  prefix = "locations",
+}) {
+  const supabase = createClientComponentClient();
+  const [uploading, setUploading] = useState(false);
+  const bucket = process.env.NEXT_PUBLIC_SUPABASE_BUCKET;
+  const previewUrl = useMemo(() => resolveImageUrl(value), [value]);
+
+  async function handleFile(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!bucket) {
+      alert("Missing NEXT_PUBLIC_SUPABASE_BUCKET env var");
+      return;
+    }
+    setUploading(true);
+    try {
+      const ext = file.name.split(".").pop();
+      const base = file.name.replace(/\.[^.]+$/, "");
+      const safeBase = base.toLowerCase().replace(/[^a-z0-9-_]+/g, "-").slice(0, 48);
+      const key = `${prefix}/${Date.now()}-${safeBase}.${ext}`;
+      const { error } = await supabase.storage.from(bucket).upload(key, file, {
+        cacheControl: "3600",
+        upsert: false,
+      });
+      if (error) throw error;
+      onChange?.(key);
+    } catch (err) {
+      console.error("Client upload failed", err);
+      // Fallback to server route using service role (if configured)
+      try {
+        const fd = new FormData();
+        fd.append("file", e.target.files?.[0]);
+        fd.append("prefix", prefix);
+        const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(json?.error || `Server upload failed (${res.status})`);
+        if (json?.key) onChange?.(json.key);
+      } catch (err2) {
+        console.error("Server upload failed", err2);
+        alert(err2.message || "Upload failed");
+      }
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  }
+
+  return (
+    <div className="space-y-2">
+      <label className="block text-sm font-medium">{label}</label>
+      <div className="flex items-center gap-3">
+        <input type="file" accept="image/*" onChange={handleFile} />
+        {uploading ? <span className="text-sm">Uploading…</span> : null}
+      </div>
+      {value ? (
+        <div className="flex items-start gap-3">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {previewUrl ? (
+            <img
+              src={previewUrl}
+              alt={`${label} preview`}
+              className="h-24 w-36 object-cover rounded border"
+            />
+          ) : null}
+          <div className="text-xs break-all text-neutral-600">
+            <div className="font-mono">{value}</div>
+            {previewUrl ? (
+              <a
+                href={previewUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-700 underline"
+              >
+                Open full image
+              </a>
+            ) : null}
+          </div>
+        </div>
+      ) : (
+        <div className="text-xs text-neutral-500">No image set</div>
+      )}
+    </div>
+  );
+}
