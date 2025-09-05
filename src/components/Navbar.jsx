@@ -17,10 +17,11 @@ export default function Navbar() {
 
   const links = [
     { href: "/", label: "Home" },
-    { href: "/destinations", label: "Destinations" },
+    { href: "/locations", label: "Locations" },
     { href: "/accommodation", label: "Accommodation" },
-    { href: "/examples", label: "Examples" },
+    { href: "/experiences", label: "Experiences" },
     { href: "/blog", label: "Blog" },
+    { href: "/fooddrink", label: "Food & Drink" },
     { href: "/about", label: "About" },
     { href: "/faq", label: "FAQ" },
     { href: "/contact", label: "Contact" },
@@ -62,7 +63,7 @@ export default function Navbar() {
           </div>
           {/* WhatsApp on mobile bar (right side) */}
 
-          <CallNowButton variant="light" className="lg:hidden" />
+          {/* <CallNowButton variant="light" className="lg:hidden" /> */}
         </div>
       </nav>
 
@@ -94,7 +95,10 @@ export default function Navbar() {
                 ))}
               </ul>
               <div className="flex justify-end pr-4">
-                <CallNowButton variant="dark" className="hidden lg:inline-flex" />
+                {/* <CallNowButton
+                  variant="dark"
+                  className="hidden lg:inline-flex"
+                /> */}
               </div>
             </div>
           </div>

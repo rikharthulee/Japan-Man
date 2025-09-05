@@ -1,30 +1,30 @@
 // lib/queries.js
 import { supabaseServer } from "@/lib/supabase/server";
 
-export async function getDestinations() {
+export async function getLocations() {
   const supabase = supabaseServer();
   return supabase
-    .from("destinations")
+    .from("locations")
     .select("id, slug, name, summary, hero_image")
     .eq("status", "published")
     .order("published_at", { ascending: false });
 }
 
-export async function getDestination(slug) {
+export async function getLocation(slug) {
   const supabase = supabaseServer();
   return supabase
-    .from("destinations")
+    .from("locations")
     .select("*")
     .eq("slug", slug)
     .eq("status", "published")
     .maybeSingle();
 }
 
-export async function getDestinationWithAreas(slug) {
+export async function getLocationWithAreas(slug) {
   const supabase = supabaseServer();
 
   const { data: destination, error: dErr } = await supabase
-    .from("destinations")
+    .from("locations")
     .select("*")
     .eq("slug", slug)
     .eq("status", "published")
@@ -33,7 +33,7 @@ export async function getDestinationWithAreas(slug) {
   if (dErr || !destination) return { destination: null, areas: [] };
 
   const { data: areas, error: aErr } = await supabase
-    .from("sub_destinations")
+    .from("sub_locations")
     .select("id, slug, name, summary, thumbnail_image, images")
     .eq("destination_id", destination.id)
     .eq("status", "published")

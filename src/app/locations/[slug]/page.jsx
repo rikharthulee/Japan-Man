@@ -1,26 +1,26 @@
-import destinations from "@/data/destinations";
+import destinations from "@/data/locations";
 import { notFound } from "next/navigation";
 import EmblaCarousel from "@/components/EmblaCarousel";
 import Image from "next/image";
-import { fetchDestinations, fetchDestinationBySlug } from "@/lib/supabaseRest";
+import { fetchLocations, fetchLocationsBySlug } from "@/lib/supabaseRest";
 import { resolveImageUrl } from "@/lib/imageUrl";
 import Link from "next/link";
 import RichText from "@/components/RichText";
 
 export async function generateStaticParams() {
   try {
-    const rows = await fetchDestinations();
+    const rows = await fetchLocations();
     return rows.map((d) => ({ slug: d.slug }));
   } catch {
     return destinations.map((d) => ({ slug: d.slug }));
   }
 }
 
-export default async function DestinationPage({ params }) {
+export default async function LocationsPage({ params }) {
   const { slug } = await params;
   let destination = null;
   try {
-    const row = await fetchDestinationBySlug(slug);
+    const row = await fetchLocationsBySlug(slug);
     if (row) {
       destination = {
         title: row.name,
@@ -46,7 +46,7 @@ export default async function DestinationPage({ params }) {
           <h1 className="text-3xl md:text-4xl font-medium text-center md:text-left flex-1">
             {destination.title}
           </h1>
-          <Link href="/destinations" className="underline ml-4">
+          <Link href="/locations" className="underline ml-4">
             Back
           </Link>
         </div>

@@ -29,9 +29,9 @@ export async function POST(req) {
   const record = payload.record || payload?.new || payload?.old || {};
   const slug = record.slug;
 
-  if (table === "destinations") {
-    tags.add("destinations");
-    if (slug) tags.add(`destination:${slug}`);
+  if (table === "locations") {
+    tags.add("locations");
+    if (slug) tags.add(`locations:${slug}`);
   }
   if (table === "accommodations") {
     tags.add("accommodations");
@@ -43,4 +43,3 @@ export async function POST(req) {
 
   return NextResponse.json({ ok: true, revalidated: Array.from(tags) });
 }
-

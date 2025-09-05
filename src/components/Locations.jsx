@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import destinationsData from "@/data/destinations";
+import destinationsData from "@/data/locations";
 
-export default function Destinations({ items }) {
+export default function Locations({ items }) {
   const source =
     Array.isArray(items) && items.length > 0 ? items : destinationsData;
   // Sort alphabetically
@@ -11,10 +11,10 @@ export default function Destinations({ items }) {
   );
 
   return (
-    <section id="destinations">
+    <section id="locations">
       <div className="border-t-2 border-black/10 pt-4">
         <div className="flex items-end justify-between">
-          <h2 className="text-3xl md:text-4xl font-medium">Destinations</h2>
+          <h2 className="text-3xl md:text-4xl font-medium">Locations</h2>
         </div>
         <div className="border-b-2 border-black/10 mt-3" />
       </div>
@@ -22,7 +22,7 @@ export default function Destinations({ items }) {
         {sortedDestinations.map((d) => (
           <div key={d.slug} className="group">
             <Link
-              href={`/destinations/${d.slug}`}
+              href={`/locations/${d.slug}`}
               className="relative overflow-hidden rounded-xl block"
             >
               <div className="relative h-64 w-full">

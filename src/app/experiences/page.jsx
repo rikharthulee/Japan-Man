@@ -1,12 +1,10 @@
 import CallNowButton from "@/components/CallNowButton";
 
-export default function ExamplesPage() {
+export default function ExperiencesPage() {
   return (
     <main className="mx-auto max-w-4xl px-4 py-10">
       <div className="border-t-2 border-black/10 pt-4">
-        <h1 className="text-3xl md:text-4xl font-medium">
-          Example Itineraries
-        </h1>
+        <h1 className="text-3xl md:text-4xl font-medium">Experiences</h1>
         <div className="border-b-2 border-black/10 mt-3" />
       </div>
 

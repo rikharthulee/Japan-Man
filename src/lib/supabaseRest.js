@@ -29,18 +29,19 @@ async function supaFetch(pathWithQuery, { revalidate = 60, tags } = {}) {
   return res.json();
 }
 
-export async function fetchDestinations() {
+export async function fetchLocations() {
   const query =
-    "destinations?select=slug,name,summary,hero_image,thumbnail_image,status&status=eq.published&order=name.asc";
-  return supaFetch(query, { revalidate: 300, tags: ["destinations"] });
+    "locations?select=slug,name,summary,hero_image,thumbnail_image,status&status=eq.published&order=name.asc";
+  return supaFetch(query, { revalidate: 300, tags: ["locations"] });
 }
 
-export async function fetchDestinationBySlug(slug) {
-  const query =
-    `destinations?slug=eq.${encodeURIComponent(slug)}&select=slug,name,summary,body_richtext,hero_image,thumbnail_image,status&limit=1`;
+export async function fetchLocationsBySlug(slug) {
+  const query = `locations?slug=eq.${encodeURIComponent(
+    slug
+  )}&select=slug,name,summary,body_richtext,hero_image,thumbnail_image,status&limit=1`;
   const rows = await supaFetch(query, {
     revalidate: 300,
-    tags: ["destinations", `destination:${slug}`],
+    tags: ["locations", `locations:${slug}`],
   });
   return rows?.[0] || null;
 }
@@ -52,8 +53,9 @@ export async function fetchAccommodations() {
 }
 
 export async function fetchAccommodationBySlug(slug) {
-  const query =
-    `accommodations?slug=eq.${encodeURIComponent(slug)}&select=slug,name,summary,description,hero_image,status&limit=1`;
+  const query = `accommodations?slug=eq.${encodeURIComponent(
+    slug
+  )}&select=slug,name,summary,description,hero_image,status&limit=1`;
   const rows = await supaFetch(query, {
     revalidate: 900,
     tags: ["accommodations", `accommodation:${slug}`],
