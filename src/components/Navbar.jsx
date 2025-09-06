@@ -12,6 +12,7 @@ export default function Navbar() {
   const [userName, setUserName] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [user, setUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const router = useRouter();
   const supabase = createClientComponentClient();
   // Keep banner height consistent between image size and padding space
@@ -36,38 +37,54 @@ export default function Navbar() {
       if (session?.user) {
         const { data: prof } = await supabase
           .from("profiles")
-          .select("display_name, avatar_url")
+          .select("display_name, avatar_url, role")
           .eq("id", session.user.id)
           .single();
         setUserName(
           prof?.display_name || session.user.user_metadata?.name || ""
         );
         setAvatarUrl(prof?.avatar_url || "");
+        setIsAdmin(["admin", "editor"].includes(prof?.role));
       } else {
         setUserName("");
         setAvatarUrl("");
+        setIsAdmin(false);
       }
     }
     prime();
 
-    const { data: sub } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setIsAuthed(!!session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        const { data: prof } = await supabase
-          .from("profiles")
-          .select("display_name, avatar_url")
-          .eq("id", session.user.id)
-          .single();
-        setUserName(
-          prof?.display_name || session.user.user_metadata?.name || ""
-        );
-        setAvatarUrl(prof?.avatar_url || "");
-      } else {
-        setUserName("");
-        setAvatarUrl("");
+    const { data: sub } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setIsAuthed(!!session);
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          const { data: prof } = await supabase
+            .from("profiles")
+            .select("display_name, avatar_url, role")
+            .eq("id", session.user.id)
+            .single();
+          setUserName(
+            prof?.display_name || session.user.user_metadata?.name || ""
+          );
+          setAvatarUrl(prof?.avatar_url || "");
+          setIsAdmin(["admin", "editor"].includes(prof?.role));
+        } else {
+          setUserName("");
+          setAvatarUrl("");
+          setIsAdmin(false);
+        }
+
+        // Sync client auth state to server cookies for SSR/admin routes
+        try {
+          await fetch("/auth/callback", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify({ event, session }),
+          });
+        } catch (_) {}
       }
-    });
+    );
     return () => {
       mounted = false;
       sub.subscription?.unsubscribe();
@@ -81,11 +98,15 @@ export default function Navbar() {
       await fetch("/auth/signout", { method: "POST" });
     } catch (_) {
       // fall back to client sign out
-      try { await supabase.auth.signOut(); } catch (_) {}
+      try {
+        await supabase.auth.signOut();
+      } catch (_) {}
     }
     // Hard redirect to ensure a clean state everywhere
     if (typeof window !== "undefined") {
-      window.location.assign("/");
+      // Use replace to avoid back navigation to an authed page
+      window.location.replace("/");
+      return;
     } else {
       router.replace("/");
       router.refresh();
@@ -98,12 +119,18 @@ export default function Navbar() {
     { href: "/locations", label: "Locations" },
     { href: "/accommodation", label: "Accommodation" },
     { href: "/experiences", label: "Experiences" },
-    { href: "/blog", label: "Blog" },
     { href: "/fooddrink", label: "Food & Drink" },
+    { href: "/blog", label: "Blog" },
     { href: "/about", label: "About" },
     { href: "/faq", label: "FAQ" },
     { href: "/contact", label: "Contact" },
   ];
+
+  // Show Admin link to any authenticated user; access is still enforced
+  // by server-side checks in admin layout and middleware.
+  const computedLinks = isAuthed
+    ? [...links, { href: "/admin", label: "Admin" }]
+    : links;
 
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-sm shadow-sm">
@@ -150,7 +177,10 @@ export default function Navbar() {
         <div className="absolute right-3 top-2 z-20 flex items-center gap-2 pl-2 pr-2">
           {(() => {
             const displayName = userName || user?.email || "";
-            const initial = (displayName || "").trim().slice(0, 1).toUpperCase();
+            const initial = (displayName || "")
+              .trim()
+              .slice(0, 1)
+              .toUpperCase();
             return (
               <>
                 {avatarUrl ? (
@@ -201,7 +231,7 @@ export default function Navbar() {
             <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-6">
               <div />
               <ul className="flex justify-center items-center gap-6 text-white">
-                {links.map((l) => (
+                {computedLinks.map((l) => (
                   <li key={l.href}>
                     <Link className="hover:opacity-80" href={l.href}>
                       {l.label}
@@ -232,7 +262,7 @@ export default function Navbar() {
       >
         <div className="px-4 pb-4">
           <ul className="flex flex-col gap-3">
-            {links.map((l) => (
+            {computedLinks.map((l) => (
               <li key={l.href}>
                 <Link
                   className="block rounded-lg px-3 py-2 hover:bg-black/5"

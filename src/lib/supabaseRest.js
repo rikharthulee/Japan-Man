@@ -47,18 +47,19 @@ export async function fetchLocationsBySlug(slug) {
 }
 
 export async function fetchAccommodations() {
-  const query =
-    "accommodations?select=slug,name,summary,hero_image,status&status=eq.published&order=name.asc";
-  return supaFetch(query, { revalidate: 900, tags: ["accommodations"] });
+  const select =
+    "slug,name,summary,hero_image,thumbnail_image,status,credit";
+  const query = `accommodation?select=${select}&status=eq.published&order=name.asc`;
+  return supaFetch(query, { revalidate: 900, tags: ["accommodation"] });
 }
 
 export async function fetchAccommodationBySlug(slug) {
-  const query = `accommodations?slug=eq.${encodeURIComponent(
-    slug
-  )}&select=slug,name,summary,description,hero_image,status&limit=1`;
+  const sel =
+    "slug,name,summary,description,hero_image,thumbnail_image,images,status,credit";
+  const query = `accommodation?slug=eq.${encodeURIComponent(slug)}&select=${sel}&limit=1`;
   const rows = await supaFetch(query, {
     revalidate: 900,
-    tags: ["accommodations", `accommodation:${slug}`],
+    tags: ["accommodation", `accommodation:${slug}`],
   });
   return rows?.[0] || null;
 }

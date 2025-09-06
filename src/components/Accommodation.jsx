@@ -29,7 +29,7 @@ export default function Accommodation({ items }) {
                   src={
                     (Array.isArray(item.images) && item.images.length > 0
                       ? item.images[0]
-                      : item.image || item.hero_image) ||
+                      : item.image || item.thumbnail_image || item.hero_image) ||
                     "/images/destinations/tokyo/tokyo1.jpg"
                   }
                   alt={`${item.title || item.name}`}

@@ -9,7 +9,7 @@ export default async function AccommodationPage() {
     items = rows.map((r) => ({
       slug: r.slug,
       title: r.name,
-      image: resolveImageUrl(r.hero_image),
+      image: resolveImageUrl(r.thumbnail_image || r.hero_image),
       credit: r.credit || null,
     }));
   } catch {}

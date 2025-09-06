@@ -9,7 +9,6 @@ export default function RichText({ value }) {
       {paras.map((p, i) => (
         <p
           key={i}
-          style={{ textIndent: "1.5em" }}
           className={`text-lg leading-relaxed ${i === 0 ? "mt-0" : "mt-3"}`}
         >
           {p}

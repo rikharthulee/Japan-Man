@@ -57,8 +57,8 @@ export async function POST(req) {
     tags.add("locations");
     if (slug) tags.add(`locations:${slug}`);
   }
-  if (table === "accommodations") {
-    tags.add("accommodations");
+  if (["accommodations", "accommodation", "accomodation"].includes(table)) {
+    tags.add("accommodation");
     if (slug) tags.add(`accommodation:${slug}`);
   }
 

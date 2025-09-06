@@ -25,9 +25,11 @@ export default async function AccommodationDetailPage({ params }) {
   try {
     const row = await fetchAccommodationBySlug(slug);
     if (row) {
+      const gallery = Array.isArray(row.images) ? row.images : [];
       item = {
         title: row.name,
-        image: resolveImageUrl(row.hero_image),
+        image: resolveImageUrl(row.hero_image || row.thumbnail_image),
+        images: gallery.map((k) => resolveImageUrl(k)).filter(Boolean),
         details: row.description || row.summary,
         credit: row.credit || null,
       };

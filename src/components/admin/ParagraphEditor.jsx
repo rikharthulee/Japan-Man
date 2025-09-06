@@ -76,7 +76,6 @@ export default function ParagraphEditor({ value, onChange, label = "Body" }) {
           {parasPreview.map((p, i) => (
             <p
               key={i}
-              style={{ textIndent: "1.5em" }}
               className={`text-base leading-relaxed ${i === 0 ? "mt-0" : "mt-3"}`}
             >
               {p}
@@ -87,4 +86,3 @@ export default function ParagraphEditor({ value, onChange, label = "Body" }) {
     </div>
   );
 }
-

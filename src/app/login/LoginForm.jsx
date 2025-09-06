@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
@@ -13,6 +13,52 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [resetMsg, setResetMsg] = useState("");
+
+  // Compute normalized redirect target from query params
+  function getRedirectTarget() {
+    const raw = searchParams.get("redirect") || "/admin";
+    const normalized = raw.replace(/^\/?admin\/accommodations\b/, "/admin/accommodation");
+    return normalized.startsWith("/") ? normalized : "/admin";
+  }
+
+  // If already signed in, or once auth state changes to SIGNED_IN, push immediately
+  // This avoids waiting on any server cookie sync or network latency.
+  useEffect(() => {
+    let unsub = { subscription: { unsubscribe() {} } };
+    (async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data?.session) {
+        const target = getRedirectTarget();
+        if (typeof window !== "undefined") {
+          window.location.replace(target);
+        } else {
+          router.replace(target);
+          router.refresh();
+        }
+        return;
+      }
+      const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+        if (event === "SIGNED_IN" && session) {
+          const target = getRedirectTarget();
+          if (typeof window !== "undefined") {
+            window.location.replace(target);
+            // Belt-and-braces fallback in case replace is ignored by the browser
+            setTimeout(() => {
+              try {
+                if (location.pathname === "/login") location.assign(target);
+              } catch {}
+            }, 500);
+          } else {
+            router.replace(target);
+            router.refresh();
+          }
+        }
+      });
+      unsub = sub;
+    })();
+    return () => unsub.subscription?.unsubscribe();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -28,10 +74,22 @@ export default function LoginForm() {
         return;
       }
 
-      const redirect = (searchParams.get("redirect") || "/admin").startsWith("/")
-        ? searchParams.get("redirect") || "/admin"
-        : "/admin";
+      // Fire-and-forget cookie sync to server; don't block navigation
+      try {
+        const { data } = await supabase.auth.getSession();
+        const session = data?.session;
+        fetch("/auth/callback", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({ event: "SIGNED_IN", session }),
+        }).catch(() => {});
+      } catch (_) {}
+
+      const redirect = getRedirectTarget();
       router.replace(redirect);
+      router.refresh();
+      return;
     } catch (err) {
       setErrorMsg("Unexpected error. Please try again.");
     } finally {
@@ -118,4 +176,3 @@ export default function LoginForm() {
     </div>
   );
 }
-
